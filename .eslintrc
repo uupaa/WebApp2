@@ -1,0 +1,31 @@
+{
+  "parserOptions": {
+   "ecmaVersion":       6,
+   "sourceType":        "module"
+  },
+  "env": {
+    "browser":          true,
+    "node":             true,
+    "es6":              true
+  },
+  "globals": {
+    "unescape":         false,
+    "escape":           false
+  },
+  "rules": {
+    "strict":           [0],
+    "no-new":           [0],
+    "new-cap":          [0],
+    "no-shadow":        [0],
+    "camelcase":        [0],
+    "key-spacing":      [0],
+    "dot-notation":     [0],
+    "comma-dangle":     [0],
+    "no-multi-str":     [0],
+    "no-multi-spaces":  [0],
+    "no-unused-vars":   [1, { "vars": "all", "args": "after-used"} ],
+    "no-underscore-dangle": [0],
+    "no-use-before-define": [0]
+  }
+}
+
