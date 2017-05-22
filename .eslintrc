@@ -12,6 +12,9 @@
     "unescape":         false,
     "escape":           false
   },
+  "extends": [
+    "eslint:recommended"
+  ],
   "rules": {
     "strict":           [0],
     "no-new":           [0],
@@ -21,6 +24,7 @@
     "key-spacing":      [0],
     "dot-notation":     [0],
     "comma-dangle":     [0],
+    "no-console":       [0],
     "no-multi-str":     [0],
     "no-multi-spaces":  [0],
     "no-unused-vars":   [1, { "vars": "all", "args": "after-used"} ],
