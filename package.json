@@ -1,7 +1,7 @@
 {
   "name": "webapp2-example-app",
   "version": "0.0.0",
-  "description": "Container(Docker) + HTTP/2 + ESModules based WebApplication develop environment.",
+  "description": "Docker + HTTP/2 + ESModules based WebApplication develop environment.",
   "url": "https://github.com/uupaa/WebApp2",
   "keywords": [],
   "repository": {
@@ -12,10 +12,8 @@
     "create:server:certificate": "cd conf; openssl genrsa -out webapp2-server.key 2048 && openssl req -new -key webapp2-server.key -out webapp2-server.csr -subj \"/C=JP/ST=Tokyo/L=Tokyo/CN=localhost\" && openssl x509 -in webapp2-server.csr -days 3650 -req -signkey webapp2-server.key > webapp2-server.crt",
     "build:image": "docker build -t webapp2-nginx .",
     "remove:image": "docker rmi webapp2-nginx",
-    "start:app": "docker run --name app -d -p 80:80 -p 443:443 webapp2-nginx && npm run cp:app",
-    "stop:app": "docker stop app",
-    "restart:app": "npm run stop:app; npm run start:app",
-    "cp:app": "docker cp app app:/usr/share/nginx/html/"
+    "start": "docker run --name app -d -p 80:80 -p 443:443 -v $(pwd)/app:/usr/share/nginx/html/app:ro webapp2-nginx",
+    "stop": "docker stop app; docker rm app"
   },
   "dependencies": {},
   "devDependencies": {},
