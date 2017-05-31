@@ -6,29 +6,29 @@
 import { UserAgent } from "./UserAgent.js";
 
 // --- define / local variables ----------------------------
-const GlobalObject = (this || 0).self || (typeof self !== "undefined") ? self : global;
+const GlobalObject = (typeof self !== "undefined") ? self : global;
 
 // --- class / interfaces ----------------------------------
-class Globals extends Map {
-  get object() {
-    return GlobalObject;
-  }
-}
-
 class App {
   constructor() {
-    this.module    = new Map();     // app.module:Map
-    this.global    = new Globals(); // app.global:Map
-    this.debug     = 0;             // app.debug:Uint8 - debug mode (0: no debug, 1: publish vars, 2: type assert)
-    this.verbose   = 0;             // app.verbose:Uint8 - verbose mode (0: no verbose, 1: verbose, 2: verbose verbose)
-    this.userAgent = UserAgent();   // app.userAgent:Object|null
+    GlobalObject.WebApp2 = { version: "0.0.1" };
+    this.module = new Map();                // app.module:Map
+    this.global = { object: GlobalObject }; // app.global:Map
+    this.debug  = 0;                        // app.debug:Uint8 - debug mode (0: no debug, 1: publish app, 2: type assert)
+    this.verbose = 0;                       // app.verbose:Uint8 - verbose mode (0: no verbose, 1: verbose, 2: verbose verbose)
+    this.userAgent = UserAgent.detect();    // app.userAgent:Object
   }
   init(fn) {
     if (this.debug) {
-      GlobalObject.app = this;      // publish. window.app = app;
+      GlobalObject.app = this;              // publish app to window.app
     }
     if (this.userAgent.browser) {
-      document.addEventListener("DOMContentLoaded", fn);
+      document.onreadystatechange = () => {
+        if (/interactive|complete/.test(document.readyState)) { // DOMContentLoaded or window.onload timming
+          document.onreadystatechange = null;
+          fn();
+        }
+      };
     } else {
       fn();
     }

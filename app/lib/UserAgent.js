@@ -10,16 +10,23 @@
 
 // --- dependency modules ----------------------------------
 // --- define / local variables ----------------------------
-const GlobalObject = (this || 0).self || (typeof self !== "undefined") ? self : global;
+const GlobalObject = (typeof self !== "undefined") ? self : global;
 
 // --- class / interfaces ----------------------------------
-export function UserAgent(userAgent,      // @arg String = navigator.userAgent
-                          options = {}) { // @arg Object = {} - { webView, displayDPR, displayLong, displayShort }
-                                          // @options.webView Boolean = false
-                                          // @options.displayDPR Number = window.devicePixelRatio || 1.0
-                                          // @options.displayLong Number = Math.max(screenWidth, screenHeight)
-                                          // @options.displayShort Number = Math.min(screenWidth, screenHeight)
-                                          // @ret Object
+export class UserAgent {
+  static detect(userAgent, options = {}) {
+    return _detectUserAgent(userAgent, options);
+  }
+}
+
+// --- implements ------------------------------------------
+function _detectUserAgent(userAgent, // @arg String = navigator.userAgent
+                          options) { // @arg Object = {} - { webView, displayDPR, displayLong, displayShort }
+                                     // @options.webView Boolean = false
+                                     // @options.displayDPR Number = window.devicePixelRatio || 1.0
+                                     // @options.displayLong Number = Math.max(screenWidth, screenHeight)
+                                     // @options.displayShort Number = Math.min(screenWidth, screenHeight)
+                                     // @ret Object
   // --- Runtime Detection ---
   const hasGlobal       = !!(GlobalObject.global);              // Node.js, NW.js, Electron
   const processType     = !!((GlobalObject.process || 0).type); // Electron(render or main)
@@ -93,13 +100,12 @@ export function UserAgent(userAgent,      // @arg String = navigator.userAgent
     userAgent:          ua,                         // UserAgent String.
     language:           lang,                       // Language String. "en", "ja", ...
     esVersion:          esVersion,                  // ECMAScript Version. 3 or 5 or 6
-    has:                function(k) { return typeof this[k] !== "undefined"; }, // has(key:String):Boolean
-    get:                function(k) { return this[k]; }, // get(key:String):Any
+    has:                function(key) { return typeof this[key] !== "undefined"; }, // has(key:String):Boolean
+    get:                function(key) { return this[key]; }, // get(key:String):Any
   };
   return result;
 }
 
-// --- implements ------------------------------------------
 function _detectLanguage(nav) {
   let lang = nav["language"] || "en";
 
@@ -167,15 +173,15 @@ function _detectBrowserVersion(ua, browserName) {
 }
 
 const BASE_BROWSERS = {
-    "Chrome":           "Chromium",
-    "Firefox":          "Firefox",
-    "IE":               "IE",
-    "Edge":             "Edge",
-    "AOSP":             "WebKit",
-    "Safari":           "WebKit",
-    "WebKit":           "WebKit",
-    "Chrome for iOS":   "WebKit",
-    "Silk":             "WebKit", // or "Chromium" if version >= 4.4
+  "Chrome":           "Chromium",
+  "Firefox":          "Firefox",
+  "IE":               "IE",
+  "Edge":             "Edge",
+  "AOSP":             "WebKit",
+  "Safari":           "WebKit",
+  "WebKit":           "WebKit",
+  "Chrome for iOS":   "WebKit",
+  "Silk":             "WebKit", // or "Chromium" if version >= 4.4
 };
 
 function _detectBaseBrowser(browserName, osVer) {
@@ -319,13 +325,13 @@ function _normalizeSemverString(version) { // @arg String - "Major.Minor.Patch"
          ( parseInt(ary[2], 10) || 0 );
 }
 
-function _isWebView(ua, osName, browserName, version, options) { // @ret Boolean - is WebView
+function _isWebView(ua, osName, browserName, browserVersion, options) { // @ret Boolean - is WebView
   switch (osName + browserName) {
   case "iOSSafari":       return false;
   case "iOSWebKit":       return _isWebView_iOS(options);
   case "AndroidAOSP":     return false; // can not accurately detect
-  case "AndroidChrome":   return parseFloat(version) >= 42 ? /; wv/.test(ua)
-                               : /\d{2}\.0\.0/.test(version) ? true // 40.0.0, 37.0.0, 36.0.0, 33.0.0, 30.0.0
+  case "AndroidChrome":   return parseFloat(browserVersion) >= 42 ? /; wv/.test(ua)
+                               : /\d{2}\.0\.0/.test(browserVersion) ? true // 40.0.0, 37.0.0, 36.0.0, 33.0.0, 30.0.0
                                : _isWebView_Android(options);
   }
   return false;
@@ -351,6 +357,7 @@ function _isWebView_iOS(options) { // @arg Object - { webView }
 }
 
 function _isWebView_Android(options) { // @arg Object - { webView }
+                                       // @ret Boolean
   // Chrome 8++
   // Android 5.0 ChromeWebView 30: webkitRequestFileSystem === false
   // Android 5.0 ChromeWebView 33: webkitRequestFileSystem === false
@@ -380,7 +387,7 @@ function _detectWebGL(hasCanvas) { // @arg Boolean - browser or nw or electron
     let canvas = document.createElement("canvas");
 
     if (canvas && canvas.getContext) {
-      var types = ["webgl2", "experimental-webgl2", "webgl", "experimental-webgl"];
+      const types = ["webgl2", "experimental-webgl2", "webgl", "experimental-webgl"];
 
       for (let i = 0, iz = types.length; i < iz; ++i) {
         let type = types[i];
@@ -392,7 +399,7 @@ function _detectWebGL(hasCanvas) { // @arg Boolean - browser or nw or electron
           result.vendor         = gl.getParameter(gl.VENDOR);
           result.maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
 
-          var info = gl.getExtension("WEBGL_debug_renderer_info");
+          let info = gl.getExtension("WEBGL_debug_renderer_info");
           if (info) {
             result.vendor   = gl.getParameter(info.UNMASKED_VENDOR_WEBGL);
             result.renderer = gl.getParameter(info.UNMASKED_RENDERER_WEBGL);
