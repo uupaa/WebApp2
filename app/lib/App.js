@@ -3,7 +3,7 @@
 // GlobalObject Idiom - https://github.com/uupaa/WebApp2/wiki/GlobalObject-Idiom
 
 // --- dependency modules ----------------------------------
-import { UserAgent } from "./UserAgent.js";
+import { UserAgent } from "../assets/modules/UserAgent.js";
 
 // --- define / local variables ----------------------------
 const GlobalObject = (typeof self !== "undefined") ? self : global;
@@ -11,7 +11,7 @@ const GlobalObject = (typeof self !== "undefined") ? self : global;
 // --- class / interfaces ----------------------------------
 class App {
   constructor() {
-    GlobalObject.WebApp2 = { version: "0.0.1" };
+    GlobalObject.WebApp2 = { app: null };
     this.module = new Map();                // app.module:Map
     this.global = { object: GlobalObject }; // app.global:Map
     this.debug  = 0;                        // app.debug:Uint8 - debug mode (0: no debug, 1: publish app, 2: type assert)
@@ -20,7 +20,7 @@ class App {
   }
   init(fn) {
     if (this.debug) {
-      GlobalObject.app = this;              // publish app to window.app
+      GlobalObject.WebApp2.app = this;      // publish app namespace to window.WebApp2.app
     }
     if (this.userAgent.browser) {
       document.onreadystatechange = () => {

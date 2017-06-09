@@ -1,12 +1,12 @@
 {
   "parserOptions": {
-    "ecmaVersion":      6,
+    "ecmaVersion":      5,
     "sourceType":       "module"
   },
   "env": {
     "browser":          true,
     "node":             true,
-    "es6":              true
+    "es6":              false
   },
   "extends": [
     "eslint:recommended"
@@ -32,7 +32,9 @@
   },
   "globals": {
     "unescape":         false,
-    "escape":           false
+    "escape":           false,
+    "Map":              false,
+    "Float32Array":     false
   }
 }
 

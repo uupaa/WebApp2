@@ -229,34 +229,39 @@ function _getiOSDevice(ua, retina, longEdge, osVersion, gl) {
   // https://github.com/uupaa/WebGLDetector.js/wiki/Examples
   // https://developer.apple.com/library/content/documentation/DeviceInformation/Reference/iOSDeviceCompatibility/HardwareGPUInformation/HardwareGPUInformation.html
   const glRenderer = gl.renderer + " " + gl.version;
-//const SGX535     = /535/.test(glRenderer);         // iPhone 3GS, iPhone 4
-  const SGX543     = /543/.test(glRenderer);         // iPhone 4s/5/5c, iPad 2/3, iPad mini
-  const SGX554     = /554/.test(glRenderer);         // iPad 4
-  const A7         = /A7 /.test(glRenderer);         // iPhone 5s, iPad mini 2/3, iPad Air
-  const A8X        = /A8X/.test(glRenderer);         // A8X: iPad Air 2
-  const A8         = /A8 /.test(glRenderer);         // A8:  iPhone 6/6+, iPad mini 4, iPod touch 6
-  const A9X        = /A9X/.test(glRenderer);         // A9X: iPad Pro, iPad Pro 9.7
-  const A9         = /A9 /.test(glRenderer);         // A9:  iPhone 6s/6s+/SE, iPad 5
-  const A10        = /A10/.test(glRenderer);         // A10: iPhone 7/7+
-//const Metal      = /Metal/.test(glRenderer);       // A10: iPhone 7/7+
   const simulator  = /Software/.test(glRenderer);    // Simulator: "Apple Software Renderer"
+  const A10X       = /A10X GPU/.test(glRenderer);    // A10X:   iPad Pro 10.5 (2017) / iPad Pro 12.9 (2017)
+  const A10        = /A10 GPU/.test(glRenderer);     // A10:    iPhone 7/7+
+  const A9X        = /A9X GPU/.test(glRenderer);     // A9X:    iPad Pro 9.7 (2016), iPad Pro 12.9 (2015)
+  const A9         = /A9 GPU/.test(glRenderer);      // A9:     iPhone 6s/6s+/SE, iPad 5
+  const A8X        = /A8X GPU/.test(glRenderer);     // A8X:    iPad Air 2
+  const A8         = /A8 GPU/.test(glRenderer);      // A8:     iPhone 6/6+, iPad mini 4, iPod touch 6
+  const A7         = /A7 GPU/.test(glRenderer);      // A7:     iPhone 5s, iPad mini 2/3, iPad Air
+  const SGX554     = /554/.test(glRenderer);         // SGX554: iPad 4
+  const SGX543     = /543/.test(glRenderer);         // SGX543: iPhone 4s/5/5c, iPad 2/3, iPad mini
+//const SGX535     = /535/.test(glRenderer);         // SGX535: iPhone 3GS, iPhone 4
+//const Metal      = /Metal/.test(glRenderer);       // Metal:  iPhone 7/7+
+//const Metal2     = /Metal2/.test(glRenderer);      // Metal2: TBD
 
   //
-  // | UserAgent#device             | zoomed | longEdge | width x height |
-  // |------------------------------|--------|----------|----------------|
-  // | iPhone 3/3GS                 |        | 480      |   320 x 480    |
-  // | iPhone 4/4s/5/5c/5s/SE       |        | 568      |   320 x 568    |
-  // | iPhone 6/6s/7                | YES    | 568      |   320 x 568    |
-  // | iPhone 6/6s/7                |        | 667      |   375 x 667    |
-  // | iPhone 6+/6s+/7+             | YES    | 667      |   375 x 667    |
-  // | iPhone 6+/6s+/7+             |        | 736      |   414 x 736    |
-  // | iPad 1/2/mini                |        | 1024     |   768 x 1024   |
-  // | iPad 3/4/5/Air/mini2/Pro 9.7 |        | 1024     |   768 x 1024   |
-  // | iPad Pro                     |        | 1366     |  1024 x 1366   |
+  // | Device name                  | zoomed | longEdge | view port   |
+  // |------------------------------|--------|----------|-------------|
+  // | iPhone 3/3GS                 |        | 480      |  320 x 480  |
+  // | iPhone 4/4s/5/5c/5s/SE       |        | 568      |  320 x 568  |
+  // | iPhone 6/6s/7                | YES    | 568      |  320 x 568  |
+  // | iPhone 6/6s/7                |        | 667      |  375 x 667  |
+  // | iPhone 6+/6s+/7+             | YES    | 667      |  375 x 667  |
+  // | iPhone 6+/6s+/7+             |        | 736      |  414 x 736  |
+  // | iPad 1/2/3/4/5               |        | 1024     |  768 x 1024 |
+  // | iPad mini/mini2/mini3/mini4  |        | 1024     |  768 x 1024 |
+  // | iPad Air/Air2                |        | 1024     |  768 x 1024 |
+  // | iPad Pro 9.7 (2016)          |        | 1024     |  768 x 1024 |
+  // | iPad Pro 10.5 (2017)         |        | 1112     |  834 x 1112 |
+  // | iPad Pro 12.9 (2015, 2017)   |        | 1366     | 1024 x 1366 |
 
   if (/iPhone/.test(ua)) {
 
-    // | UserAgent#device | zoomed | detected device width x height |
+    // | Device name      | zoomed | detected device width x height |
     // |------------------|--------|--------------------------------|
     // | "iPhone 6"       | YES    | iPhone 6  (320 x 568)          |
     // | "iPhone 6s"      | YES    | iPhone 6s (320 x 568)          |
@@ -294,8 +299,9 @@ function _getiOSDevice(ua, retina, longEdge, osVersion, gl) {
          : A7              ? "iPad mini 2" // iPad mini 3, iPad Air
          : A8X             ? "iPad Air 2"
          : A8              ? "iPad mini 4"
-         : A9X             ? (longEdge <= 1024 ? "iPad Pro 9.7" : "iPad Pro")
+         : A9X             ? (longEdge <= 1024 ? "iPad Pro 9.7" : "iPad Pro 12.9")
          : A9              ? "iPad 5"
+         : A10X            ? (longEdge <= 1112 ? "iPad Pro 10.5" : "iPad Pro 12.9")
                            : "iPad x"; // Unknown device (maybe new iPad)
   } else if (/iPod/.test(ua)) {
     if (simulator) {
