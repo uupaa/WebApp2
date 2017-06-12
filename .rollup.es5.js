@@ -15,7 +15,7 @@ export default {
     resolve({ jsnext: true }),
     commonjs(),
     buble(), // ES6 -> ES5
-    eslint({ configFile: path.resolve("./.eslintrc.es5") }),
+    eslint({ configFile: path.resolve("./.eslintrc.es5.json") }),
     cleanup(),
     license({
       banner: "Copyright 2017 @uupaa",

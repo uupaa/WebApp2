@@ -8,9 +8,9 @@
     "remove:image": "docker rmi webapp2-nginx",
     "start": "docker run --name app -d -p 80:80 -p 443:443 -v $(pwd)/app:/usr/share/nginx/html/app:ro webapp2-nginx",
     "stop": "docker stop app; docker rm app",
-    "bundle": "rollup -c .rollup.es5",
-    "watch": "rollup -w -c .rollup.es5 &",
-    "unwatch": "killall -- node $(pwd)/node_modules/.bin/rollup -w -c .rollup.es5; exit 0",
+    "bundle": "rollup -c .rollup.es5.js",
+    "watch": "rollup -w -c .rollup.es5.js &",
+    "unwatch": "killall -- node $(pwd)/node_modules/.bin/rollup -w -c .rollup.es5.js; exit 0",
     "eslint": "eslint app/lib --",
     "zip": "zip -r WebApp2.zip . -x 'node_modules/*' '.git/*'"
   },
